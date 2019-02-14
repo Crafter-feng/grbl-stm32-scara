@@ -85,11 +85,7 @@ void USART1_Configuration(u32 BaudRate)
 #endif
 
 
-#ifdef WIN32
-int main(int argc, char *argv[])
-#else
 int main(void)
-#endif
 {
 #if defined (STM32F103C8)
     GPIO_PinRemapConfig(GPIO_Remap_SWJ_Disable, ENABLE);
@@ -117,19 +113,11 @@ int main(void)
 	SysTick->CTRL &= 0xfffffffb;
 #endif
   // Initialize system upon power-up.
-  serial_init();   // Setup serial baud rate and interrupts
-#ifdef WIN32
-  winserial_init(argv[1]);
-  eeprom_init();
-#endif
   settings_init(); // Load Grbl settings from EEPROM
   stepper_init();  // Configure stepper pins and interrupt timers
   system_init();   // Configure pinout pins and pin-change interrupt
 
   memset(sys_position,0,sizeof(sys_position)); // Clear machine position.
-#ifdef AVRTARGET
-  sei(); // Enable interrupts
-#endif
   // Initialize system state.
   #ifdef FORCE_INITIALIZATION_ALARM
     // Force Grbl into an ALARM state upon a power-cycle or hard reset.

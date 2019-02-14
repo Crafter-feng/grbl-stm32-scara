@@ -1,7 +1,9 @@
 *.hex
+*.bin
 *.o
 *.elf
 *.DS_Store
 *.d
+.cproject
+.project
 
-README.md

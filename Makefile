@@ -1,16 +1,13 @@
 # detect what shell is used
-#ifeq ($(findstring cmd.exe,$(SHELL)),cmd.exe)
-#$(info "Info : Running on Windows shell cmd.exe")
-#DEVNUL := NUL
-#WHICH := where
-#else
-#$(info "Info : Running on Unix shell")
-#DEVNUL := /dev/null
-#WHICH := which
-#endif
 
+#Running on Windows shell 
 DEVNUL := NUL
 WHICH := where
+
+#Running on Unix shell
+#DEVNUL := /dev/null
+#WHICH := which
+
 # Find first cross compilation tools
 XTOOLS_DIR = $(abspath $(shell dirname `${WHICH} arm-none-eabi-gcc`)/..)
 
@@ -22,54 +19,57 @@ X_AR = $(XTOOLS_DIR)/bin/arm-none-eabi-ar
 X_LD = $(XTOOLS_DIR)/bin/arm-none-eabi-ld
 X_GDB = $(XTOOLS_DIR)/bin/arm-none-eabi-gdb
 
-OUT_DIR = build
+RM=rm -rf
 
+OUT_DIR = build
 OUTPUT = grbl-stm32
 
-SRC= ./cmsis_boot/startup/startup_stm32f10x_md.c \
-     ./cmsis_boot/system_stm32f10x.c \
-     ./grbl/coolant_control.c \
-     ./grbl/eeprom.c \
-     ./grbl/gcode.c \
-     ./grbl/jog.c \
-     ./grbl/limits.c \
-     ./grbl/main.c \
-     ./grbl/motion_control.c \
-     ./grbl/nuts_bolts.c \
-     ./grbl/planner.c \
-     ./grbl/print.c \
-     ./grbl/probe.c \
-     ./grbl/protocol.c \
-     ./grbl/report.c \
-     ./grbl/serial.c \
-     ./grbl/settings.c \
-     ./grbl/spindle_control.c \
-     ./grbl/stepper.c \
-     ./grbl/system.c \
-     ./grbl/scara.c \
-     ./stm_lib/src/misc.c \
-     ./stm_lib/src/stm32f10x_exti.c \
-     ./stm_lib/src/stm32f10x_flash.c \
-     ./stm_lib/src/stm32f10x_gpio.c \
-     ./stm_lib/src/stm32f10x_rcc.c \
-     ./stm_lib/src/stm32f10x_tim.c \
-     ./stm_lib/src/stm32f10x_usart.c \
-     ./stm_usb_fs_lib/src/usb_core.c \
-     ./stm_usb_fs_lib/src/usb_init.c \
-     ./stm_usb_fs_lib/src/usb_int.c \
-     ./stm_usb_fs_lib/src/usb_mem.c \
-     ./stm_usb_fs_lib/src/usb_regs.c \
-     ./stm_usb_fs_lib/src/usb_sil.c \
-     ./usb/hw_config.c \
-     ./usb/usb_desc.c \
-     ./usb/usb_endp.c \
-     ./usb/usb_istr.c \
-     ./usb/usb_prop.c \
-     ./usb/usb_pwr.c \
-     ./util/stm32f10x_it.c
+GRBL_SRC=./grbl/coolant_control.c \
+         ./grbl/eeprom.c \
+         ./grbl/gcode.c \
+         ./grbl/jog.c \
+         ./grbl/limits.c \
+         ./grbl/main.c \
+         ./grbl/motion_control.c \
+         ./grbl/nuts_bolts.c \
+         ./grbl/planner.c \
+         ./grbl/print.c \
+         ./grbl/probe.c \
+         ./grbl/protocol.c \
+         ./grbl/report.c \
+         ./grbl/serial.c \
+         ./grbl/settings.c \
+         ./grbl/spindle_control.c \
+         ./grbl/stepper.c \
+         ./grbl/system.c \
+         ./grbl/scara.c
+         
+STM_SRC= ./cmsis_boot/startup/startup_stm32f10x_md.c \
+         ./cmsis_boot/system_stm32f10x.c \
+         ./stm_lib/src/misc.c \
+         ./stm_lib/src/stm32f10x_exti.c \
+         ./stm_lib/src/stm32f10x_flash.c \
+         ./stm_lib/src/stm32f10x_gpio.c \
+         ./stm_lib/src/stm32f10x_rcc.c \
+         ./stm_lib/src/stm32f10x_tim.c \
+         ./stm_lib/src/stm32f10x_usart.c
+         
+USB_SRC=./stm_usb_fs_lib/src/usb_core.c \
+         ./stm_usb_fs_lib/src/usb_init.c \
+         ./stm_usb_fs_lib/src/usb_int.c \
+         ./stm_usb_fs_lib/src/usb_mem.c \
+         ./stm_usb_fs_lib/src/usb_regs.c \
+         ./stm_usb_fs_lib/src/usb_sil.c \
+         ./usb/hw_config.c \
+         ./usb/usb_desc.c \
+         ./usb/usb_endp.c \
+         ./usb/usb_istr.c \
+         ./usb/usb_prop.c \
+         ./usb/usb_pwr.c \
+         ./util/stm32f10x_it.c
 
-OBJ = $(patsubst %.c, %.o, $(SRC))
-#OBJ += $(BOARD_DIR)/start.o
+SRC = $(GRBL_SRC) $(USB_SRC) $(STM_SRC)
+OBJ = $(patsubst %.c,%.o,$(SRC))
 
 # include files
 INC = .
@@ -86,10 +86,6 @@ INC += util
 
 INCLUDE = $(addprefix -I,$(INC))
 
-# compiler flags
-# as in coocox
-# -mcpu=cortex-m3 ; -mthumb ; -g2 ; -Wall ; -Os ; -DUSE_STDPERIPH_DRIVER ; -D__ASSEMBLY__ ; -D_GRBL_ ; -DSTM32F103C8 ; -DSTM32F10X_MD ; -DLEDBLINK ; -DUSEUSB ; -I. ; -Iusb ; -Iutil ; -Iuseusb ; -Igrbl ;
-
 CFLAGS = -Wall
 CFLAGS += -Os
 CFLAGS += -g2
@@ -101,29 +97,36 @@ LDSCRIPT = stm32_flash.ld
 LDFLAGS = -T$(LDSCRIPT) -Wl,-Map,$(OUT_DIR)/$(OUTPUT).map -Wl,--gc-sections
 
 # defines
-DEFINES = -DUSE_STDPERIPH_DRIVER -D__ASSEMBLY__ -D_GRBL_ -DSTM32F103C8 -DSTM32F10X_MD -DLEDBLINK -DUSEUSB -DSCARA -DSERVO_PEN
+DEFINE = STM32F10X_MD
+DEFINE += USE_STDPERIPH_DRIVER
+DEFINE += __ASSEMBLY__
+DEFINE += _GRBL_
+DEFINE += STM32F103C8
+DEFINE += LEDBLINK
+DEFINE += USEUSB
+DEFINE += SCARA
+DEFINE += SERVO_PEN
 
-.S.o:
+DEFINES = $(addprefix -D,$(DEFINE))
+
+%.o: %.S
 	$(X_CC) $(INCLUDE) $(DEFINES) $(CFLAGS) -c $< -o $@
-.c.o:
+	
+%.o: %.c
 	$(X_CC) $(INCLUDE) $(DEFINES) $(CFLAGS) -c $< -o $@
 
-.PHONY: all flash grbl_src clean
+.PHONY: all flash clean
 
 all:  $(OBJ)
-	$(X_CC) $(CFLAGS) $(LDFLAGS) $(OBJ) -lm -o $(OUT_DIR)/$(OUTPUT)
-	mv $(OUT_DIR)/$(OUTPUT) $(OUT_DIR)/$(OUTPUT).elf
+	@mkdir -p $(OUT_DIR) 2> NUL
+	$(X_CC) $(CFLAGS) $(LDFLAGS) $(OBJ) -lm -o $(OUT_DIR)/$(OUTPUT).elf
 	$(X_OBJCOPY) -O binary $(OUT_DIR)/$(OUTPUT).elf $(OUT_DIR)/$(OUTPUT).bin
-
+	
 flash:
-	make all
+	make	all
 	STM32_Programmer_CLI -c port=SWD -d $(OUT_DIR)/$(OUTPUT).elf -v
-    
-grbl_src:
-	make  all
 
 clean:
-	-rm $(OBJ)
-	-rm $(OUT_DIR)/$(OUTPUT).map
-	-rm $(OUT_DIR)/$(OUTPUT).bin
-	-rm $(OUT_DIR)/$(OUTPUT).elf
+	$(RM) $(OBJ)
+	$(RM) $(OUT_DIR)
+	

@@ -26,11 +26,12 @@
    NOTE: Ensure one and only one of these DEFAULTS_XXX values is defined in config.h */
 
 #ifndef defaults_h
+#define defaults_h
 
 // Grbl generic default settings. Should work across different machines.
-#define DEFAULT_X_STEPS_PER_MM 48.888889f
-#define DEFAULT_Y_STEPS_PER_MM 48.888889f
-#define DEFAULT_Z_STEPS_PER_MM 48.888889f
+#define DEFAULT_X_STEPS_PER_MM 97.777778f
+#define DEFAULT_Y_STEPS_PER_MM 97.777778f
+#define DEFAULT_Z_STEPS_PER_MM 97.777778f
 #define DEFAULT_X_MAX_RATE 2000.0f // mm/min
 #define DEFAULT_Y_MAX_RATE 2000.0f // mm/min
 #define DEFAULT_Z_MAX_RATE 2000.0f // mm/min
