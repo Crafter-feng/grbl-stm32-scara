@@ -77,8 +77,8 @@ void serial_write(uint8_t data) {
   uint8_t next_head = serial_tx_buffer_head + 1;
   #ifdef STM32F103C8
 #ifndef USEUSB
-	USART_SendData(USART1, data);
-	while (!(USART1->SR & USART_FLAG_TXE));		 //µÈ´ý·¢ËÍÍê³É
+	USART_SendData(USART3, data);
+	while (!(USART3->SR & USART_FLAG_TXE));		 //ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     return;
 #endif
 #endif
@@ -128,19 +128,19 @@ void OnUsbDataRx(uint8_t* dataIn, uint8_t length)
         data = *dataIn ++;
 #else
 /*----------------------------------------------------------------------------
-  USART1_IRQHandler
-  Handles USART1 global interrupt request.
+  USART3_IRQHandler
+  Handles USART3 global interrupt request.
  *----------------------------------------------------------------------------*/
-void USART1_IRQHandler (void) 
+void USART3_IRQHandler (void) 
 {
     volatile unsigned int IIR;
     uint8_t data;
     uint8_t next_head;
 
-    IIR = USART1->SR;
+    IIR = USART3->SR;
     if (IIR & USART_FLAG_RXNE) 
     {                  // read interrupt
-        data = USART1->DR & 0x1FF;
+        data = USART3->DR & 0x1FF;
 #endif
 #endif
   // Pick off realtime command characters directly from the serial stream. These characters are
@@ -196,7 +196,7 @@ void USART1_IRQHandler (void)
 
 #ifdef STM32F103C8
 #ifndef USEUSB
-        USART1->SR &= ~USART_FLAG_RXNE;	          // clear interrupt
+        USART3->SR &= ~USART_FLAG_RXNE;	          // clear interrupt
 #else
     length--;
 #endif

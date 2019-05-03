@@ -29,16 +29,13 @@
 #define config_h
 #include "grbl.h" // For Arduino IDE compatibility.
 
-
 // Define CPU pin map and default settings.
 // NOTE: OEMs can avoid the need to maintain/update the defaults.h and cpu_map.h files and use only
 // one configuration file by placing their specific defaults and pin map at the bottom of this file.
 // If doing so, simply comment out these two defines and see instructions below.
 //#define DEFAULTS_GENERIC
 
-#ifdef WIN32
-#define CPU_MAP_WIN32
-#endif
+
 #ifdef AVRTARGET
 #define CPU_MAP_ATMEGA328P // Arduino Uno CPU
 #endif

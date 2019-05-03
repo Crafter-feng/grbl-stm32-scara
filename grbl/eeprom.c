@@ -144,7 +144,7 @@ void memcpy_to_eeprom_with_checksum(unsigned int destination, char *source, unsi
     eeprom_put_char(destination++, *(source++)); 
   }
   eeprom_put_char(destination, checksum);
-#if defined(WIN32) || defined(STM32F103C8)
+#if defined(STM32F103C8)
 #ifndef NOEEPROMSUPPORT
   eeprom_flush();
 #endif

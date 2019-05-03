@@ -38,28 +38,6 @@ void printPgmString(const char *s)
 }
 #endif
 
-// void printIntegerInBase(unsigned long n, unsigned long base)
-// {
-// 	unsigned char buf[8 * sizeof(long)]; // Assumes 8-bit chars.
-// 	unsigned long i = 0;
-//
-// 	if (n == 0) {
-// 		serial_write('0');
-// 		return;
-// 	}
-//
-// 	while (n > 0) {
-// 		buf[i++] = n % base;
-// 		n /= base;
-// 	}
-//
-// 	for (; i > 0; i--)
-// 		serial_write(buf[i - 1] < 10 ?
-// 			'0' + buf[i - 1] :
-// 			'A' + buf[i - 1] - 10);
-// }
-
-
 // Prints an uint8 variable in base 10.
 void print_uint8_base10(uint8_t n)
 {
@@ -83,9 +61,6 @@ void print_uint8_base10(uint8_t n)
 void print_uint8_base2_ndigit(uint8_t n, uint8_t digits) {
 #if defined(AVRTARGET) || defined(STM32F103C8)
 	unsigned char buf[digits];
-#endif
-#ifdef WIN32
-	unsigned char buf[20];
 #endif
   uint8_t i = 0;
 
@@ -192,14 +167,3 @@ void printFloat_RateValue(float n) {
     printFloat(n,N_DECIMAL_RATEVALUE_MM);
   }
 }
-
-// Debug tool to print free memory in bytes at the called point.
-// NOTE: Keep commented unless using. Part of this function always gets compiled in.
-// void printFreeMemory()
-// {
-//   extern int __heap_start, *__brkval;
-//   uint16_t free;  // Up to 64k values.
-//   free = (int) &free - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-//   printInteger((int32_t)free);
-//   printString(" ");
-// }

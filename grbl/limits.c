@@ -203,9 +203,6 @@ void limits_go_home(uint8_t cycle_mask)
     // Initialize and declare variables needed for homing routine.
     axislock = 0;
     n_active_axis = 0;
-#ifdef SCARA
-	scara_report_positions();
-#endif
     for (idx=0; idx<N_AXIS; idx++) {
       // Set target location for active axes and setup computation for homing rate.
       if (bit_istrue(cycle_mask,bit(idx))) {
@@ -307,7 +304,9 @@ void limits_go_home(uint8_t cycle_mask)
       max_travel = settings.homing_pulloff;
       homing_rate = settings.homing_seek_rate;
     }
-
+#ifdef SCARA
+	scara_report_positions();
+#endif
   } while (n_cycle-- > 0);
 
   // The active cycle axes should now be homed and machine limits have been located. By

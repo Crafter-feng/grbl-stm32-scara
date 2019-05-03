@@ -38,11 +38,11 @@
 
 // SCARA tower offset (position of Tower relative to bed zero position)
 // This needs to be reasonably accurate as it defines the printbed position in the SCARA space.
-#define SCARA_OFFSET_X -129 //mm
-#define SCARA_OFFSET_Y 128//mm	
+#define SCARA_OFFSET_X -135 //mm
+#define SCARA_OFFSET_Y 105//mm	
 
-#define MANUAL_X_HOME_POS -48.27f
-#define MANUAL_Y_HOME_POS 90.67f
+#define MANUAL_X_HOME_POS -45.43f
+#define MANUAL_Y_HOME_POS 95.67f
 #define MANUAL_Z_HOME_POS 0.0f
 
 #define RADIANS(d) ((d)*(float)M_PI/180.0f)
